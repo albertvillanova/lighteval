@@ -187,6 +187,9 @@ class InferenceEndpointModel(LightevalModel):
                     if "409 Client Error: Conflict for url:" in str(e):
                         config.endpoint_name = endpoint_name
                         config.should_reuse_existing = True
+                        # TODO: AVM
+                        logger.info("409 Client Error: Conflict for url")
+                        raise e
                     # Requested resources are not available
                     elif "Bad Request: Compute instance not available yet" in str(e):
                         logger.error(
@@ -198,6 +201,8 @@ class InferenceEndpointModel(LightevalModel):
                         raise e
                 except ConnectionError as e:
                     logger.error(f"Connection failed with error {e}. Retrying")
+                    # TODO: AVM
+                    raise e
 
             if not self.endpoint.status == "running":
                 raise Exception("Did not manage to start endpoint within the elapsed time and on suggested hardware.")
