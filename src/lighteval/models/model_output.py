@@ -23,7 +23,12 @@
 from dataclasses import dataclass, field
 from typing import Optional, Union
 
-import torch
+from lighteval.utils.imports import is_torch_available
+
+# TODO: AVM
+if is_torch_available():
+# if False:
+    import torch
 
 
 @dataclass
@@ -76,8 +81,8 @@ class GenerativeMultiturnResponse(ModelResponse):
 
 @dataclass
 class Batch:
-    input_ids: torch.Tensor
-    input_mask: torch.Tensor
+    input_ids: "torch.Tensor"
+    input_mask: "torch.Tensor"
     input_lengths: list[int]
     truncated: list[int]
     padded: list[int]

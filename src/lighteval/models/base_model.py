@@ -24,11 +24,6 @@ import logging
 import os
 from typing import Optional, Tuple, Union
 
-import torch
-import torch.nn.functional as F
-import transformers
-from torch.nn.utils.rnn import pad_sequence
-from torch.utils.data import DataLoader
 from tqdm import tqdm
 from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
 from transformers.models.auto.modeling_auto import MODEL_FOR_CAUSAL_LM_MAPPING_NAMES
@@ -52,10 +47,18 @@ from lighteval.tasks.requests import (
     LoglikelihoodSingleTokenRequest,
     Request,
 )
-from lighteval.utils.imports import is_accelerate_available
+from lighteval.utils.imports import is_accelerate_available, is_torch_available
 from lighteval.utils.parallelism import find_executable_batch_size
 from lighteval.utils.utils import EnvConfig, as_list
 
+
+if is_torch_available():
+    # if False:
+    import torch
+    import torch.nn.functional as F
+    import transformers
+    from torch.nn.utils.rnn import pad_sequence
+    from torch.utils.data import DataLoader
 
 logger = logging.getLogger(__name__)
 

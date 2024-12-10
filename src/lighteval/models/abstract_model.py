@@ -24,7 +24,13 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from typing import Optional, Union
 
-import torch
+from lighteval.utils.imports import is_torch_available
+
+
+# TODO: AVM
+if is_torch_available():
+    # if False:
+    import torch
 from transformers import BatchEncoding, PreTrainedTokenizerBase
 
 from lighteval.models.model_output import (
@@ -43,7 +49,7 @@ from lighteval.tasks.requests import (
 )
 
 
-TokenSequence = Union[list[int], torch.LongTensor, torch.Tensor, BatchEncoding]
+TokenSequence = Union[list[int], "torch.LongTensor", "torch.Tensor", BatchEncoding]
 
 
 @dataclass
@@ -208,5 +214,5 @@ class LightevalModel(ABC):
         continuation_enc = whole_enc[context_enc_len:]
         return context_enc, continuation_enc
 
-    def tok_decode(self, tokens: torch.LongTensor) -> list[str]:
+    def tok_decode(self, tokens: "torch.LongTensor") -> list[str]:
         return self.tokenizer.batch_decode(tokens, skip_special_tokens=True)

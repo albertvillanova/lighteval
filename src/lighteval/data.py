@@ -24,9 +24,15 @@ import logging
 import math
 from typing import Iterator, Tuple
 
-import torch
-from torch.utils.data import Dataset
-from torch.utils.data.distributed import DistributedSampler, T_co
+from lighteval.utils.imports import is_torch_available
+
+
+# TODO: AVM
+if is_torch_available():
+    # if False:
+    import torch
+    from torch.utils.data import Dataset
+    from torch.utils.data.distributed import DistributedSampler, T_co
 
 from lighteval.tasks.requests import (
     GreedyUntilRequest,

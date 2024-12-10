@@ -28,15 +28,24 @@ import time
 from collections import defaultdict
 
 import pandas as pd
-import torch
-from torch.nn.utils.rnn import pad_sequence
+
+from lighteval.utils.imports import NO_TORCH_ERROR_MSG, is_torch_available
+
+
+# TODO: AVM
+if is_torch_available():
+# if False:
+    import torch
+    from torch.nn.utils.rnn import pad_sequence
 from transformers import AutoModel, AutoTokenizer
 
 
 logger = logging.getLogger(__name__)
 
 
-def padding(arr, pad_token, dtype=torch.long):
+def padding(arr, pad_token, dtype="torch.long"):
+    if not is_torch_available():
+        raise ImportError(NO_TORCH_ERROR_MSG)
     lens = torch.LongTensor([len(a) for a in arr])
     max_len = lens.max().item()
     padded = torch.ones(len(arr), max_len, dtype=dtype) * pad_token
@@ -61,6 +70,8 @@ def sent_encode(tokenizer, sent):
 
 
 def bert_encode(model, x, attention_mask, all_layers=False):
+    if not is_torch_available():
+        raise ImportError(NO_TORCH_ERROR_MSG)
     model.eval()
     with torch.no_grad():
         out = model(x, attention_mask=attention_mask, output_hidden_states=all_layers)
@@ -122,6 +133,8 @@ def get_bert_embedding(
                                inverse document frequency
         - :param: `device` (str): device to use, e.g. 'cpu' or 'cuda'
     """
+    if not is_torch_available():
+        raise ImportError(NO_TORCH_ERROR_MSG)
 
     padded_sens, padded_idf, _, mask = collate_idf(all_sens, tokenizer, idf_dict, device=device)
 
@@ -175,6 +188,8 @@ def greedy_cos_idf(
         - :param: `hyp_idf` (torch.Tensor): BxK, idf score of each word
                    piece in the candidate setence
     """
+    if not is_torch_available():
+        raise ImportError(NO_TORCH_ERROR_MSG)
     ref_embedding.div_(torch.norm(ref_embedding, dim=-1).unsqueeze(-1))
     hyp_embedding.div_(torch.norm(hyp_embedding, dim=-1).unsqueeze(-1))
 
@@ -261,6 +276,9 @@ def bert_cos_score_idf(
         - :param: `batch_size` (int): bert score processing batch size
         - :param: `device` (str): device to use, e.g. 'cpu' or 'cuda'
     """
+    if not is_torch_available():
+        raise ImportError(NO_TORCH_ERROR_MSG)
+
     preds = []
 
     def dedup_and_sort(l_item):
@@ -356,7 +374,8 @@ class BERTScorer:
             - :param: `rescale_with_baseline` (bool): rescale bertscore with pre-computed baseline
             - :param: `baseline_path` (str): customized baseline file
         """
-
+        if not is_torch_available():
+            raise ImportError(NO_TORCH_ERROR_MSG)
         assert lang is not None or model_type is not None, "Either lang or model_type should be specified"
 
         if rescale_with_baseline:
