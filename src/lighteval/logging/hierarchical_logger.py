@@ -34,8 +34,12 @@ if is_nanotron_available():
 
     logger = get_logger(__name__, log_level="INFO")
 elif is_accelerate_available():
+    from accelerate import Accelerator
     from accelerate.logging import get_logger
 
+    # TODO: Remove this once we are sure Accelerate is initialized before logging
+    # Fix: RuntimeError: You must initialize the accelerate state by calling either `PartialState()` or `Accelerator()` before using the logging utility.
+    _ = Accelerator()
     logger = get_logger(__name__, log_level="INFO")
 else:
     logger = Logger(__name__, level="INFO")
