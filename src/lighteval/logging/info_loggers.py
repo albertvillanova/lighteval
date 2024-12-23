@@ -24,6 +24,7 @@ import collections
 import os
 import time
 from dataclasses import asdict, dataclass, field
+from enum import Enum
 from typing import Optional, Union
 
 import git
@@ -593,8 +594,23 @@ class TaskConfigLogger:
     task_configs: dict[str, dict] = field(default_factory=dict)
 
     def log(self, task_dict: dict[str, LightevalTask]) -> None:
-        self.task_configs = {name: asdict(task.cfg) for name, task in task_dict.items()}
+        self.task_configs = {
+            name: asdict(task.cfg, dict_factory=enhanced_dict_factory) for name, task in task_dict.items()
+        }
 
     def log_num_docs(self, task_name: str, original_num_docs: int, effective_num_docs: int) -> None:
         self.task_configs[task_name]["original_num_docs"] = original_num_docs
         self.task_configs[task_name]["effective_num_docs"] = effective_num_docs
+
+
+def enhanced_dict_factory(data: list):
+    for i, (key, value) in enumerate(data):
+        if callable(value):
+            if hasattr(value, "__name__"):
+                value = value.__name__
+            elif hasattr(value, "func"):
+                value = value.func.__name__
+        elif isinstance(value, Enum):
+            value = value.name
+        data[i] = (key, value)
+    return dict(data)
