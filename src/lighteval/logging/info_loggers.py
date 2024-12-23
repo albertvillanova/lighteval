@@ -461,6 +461,8 @@ class DetailsLogger:
             d.num_truncated_few_shots for d in self.compiled_details.values()
         )
 
+        self.compiled_details = {key: asdict(value) for key, value in self.compiled_details.items()}
+
 
 @dataclass
 class MetricsLogger:
