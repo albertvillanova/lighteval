@@ -102,9 +102,9 @@ class InferenceEndpointModel(LightevalModel):
                 )
             hlog("Deploying your endpoint. Please wait.")
             try:
-                self.endpoint.wait(timeout=600)  # Waits for the endpoint to be deployed
+                self.endpoint.wait(timeout=1800)  # Waits for the endpoint to be deployed
             except InferenceEndpointTimeoutError as e:
-                hlog_err("Endpoint did not start within 10 minutes, there was a timeout.")
+                hlog_err("Endpoint did not start within 30 minutes, there was a timeout.")
                 self.cleanup()
                 raise e
             hlog("Endpoint successfully deployed!")
