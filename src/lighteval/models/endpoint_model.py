@@ -177,7 +177,7 @@ class InferenceEndpointModel(LightevalModel):
             decoder_input_details=True,
             grammar=grammar,
             max_new_tokens=max_tokens,
-            stop_sequences=stop_tokens,
+            stop=stop_tokens,
             # truncate=,
         )
 
@@ -198,7 +198,7 @@ class InferenceEndpointModel(LightevalModel):
             decoder_input_details=True,
             grammar=grammar,
             max_new_tokens=max_tokens,
-            stop_sequences=stop_tokens,
+            stop=stop_tokens,
             # truncate=,
         )
 
