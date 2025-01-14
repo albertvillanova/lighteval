@@ -94,6 +94,7 @@ class InferenceEndpointModel(LightevalModel):
                             "MAX_TOTAL_TOKENS": "2048",
                             "MODEL_ID": "/repository",
                             "HF_MODEL_TRUST_REMOTE_CODE": "true",
+                            "ENABLE_PREFILL_LOGPROBS": "true",
                             **config.get_dtype_args(),
                             **config.get_custom_env_vars(),
                         },
